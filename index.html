@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>JanjuaTalks | Official Fan Hub</title>
+<meta name="description" content="JanjuaTalks Official Fan Hub — Pakistan's premier destination for live video chats, viral highlights, and the most dedicated streaming fan community.">
+<meta name="theme-color" content="#02020a">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -26,12 +28,13 @@
    RESET
 ══════════════════════════════════════════════ */
 *,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
-html { scroll-behavior:smooth; }
+html { scroll-behavior:smooth; background:var(--bg); }
 body {
   background:var(--bg); color:#fff;
   font-family:'Rajdhani',sans-serif;
-  overflow-x:hidden; cursor:none;
+  overflow-x:hidden;
 }
+@media(hover:hover) and (pointer:fine){ body{ cursor:none; } }
 a { text-decoration:none; color:inherit; }
 
 /* ══════════════════════════════════════════════
@@ -44,19 +47,20 @@ a { text-decoration:none; color:inherit; }
   box-shadow:0 0 16px var(--cyan),inset 0 0 10px rgba(0,240,255,0.08);
   transform:translate(-50%,-50%);
   transition:width .2s,height .2s,border-color .25s,box-shadow .25s;
-  will-change:transform;
+  will-change:transform; left:-100px; top:-100px;
 }
 #c-dot {
   position:fixed; pointer-events:none; z-index:99999;
   width:5px; height:5px; background:#fff; border-radius:50%;
   transform:translate(-50%,-50%);
-  box-shadow:0 0 6px #fff; will-change:transform;
+  box-shadow:0 0 6px #fff; will-change:transform; left:-100px; top:-100px;
 }
 .c-hover #c-ring {
   width:60px; height:60px;
   border-color:var(--red);
   box-shadow:0 0 22px var(--red),inset 0 0 14px rgba(255,74,90,0.08);
 }
+@media(hover:none),(pointer:coarse){ #c-ring,#c-dot{ display:none; } }
 
 /* ══════════════════════════════════════════════
    CANVASES
@@ -76,19 +80,29 @@ a { text-decoration:none; color:inherit; }
   background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size:128px;
 }
+/* subtle vignette for cinematic depth */
+#vignette {
+  position:fixed; inset:0; z-index:2; pointer-events:none;
+  background:radial-gradient(ellipse at 50% 42%, transparent 40%, rgba(2,2,10,0.55) 100%);
+}
 
 /* ══════════════════════════════════════════════
    SCROLLBAR
 ══════════════════════════════════════════════ */
-::-webkit-scrollbar { width:4px; }
+::-webkit-scrollbar { width:5px; }
 ::-webkit-scrollbar-track { background:var(--bg); }
 ::-webkit-scrollbar-thumb {
-  background:var(--cyan); border-radius:2px;
-  box-shadow:0 0 8px var(--cyan);
+  background:linear-gradient(180deg,var(--cyan),var(--purp));
+  border-radius:3px;
+  box-shadow:0 0 10px var(--cyan);
 }
+::-webkit-scrollbar-thumb:hover {
+  background:linear-gradient(180deg,var(--cyan),var(--red));
+}
+html { scrollbar-color:var(--cyan) var(--bg); scrollbar-width:thin; }
 
 /* ══════════════════════════════════════════════
-   GLITCH TEXT EFFECT
+   GLITCH TEXT EFFECT — chromatic RGB split
 ══════════════════════════════════════════════ */
 .glitch {
   position:relative; display:inline-block;
@@ -97,17 +111,17 @@ a { text-decoration:none; color:inherit; }
   content:attr(data-text);
   position:absolute; top:0; left:0;
   width:100%; height:100%;
-  font:inherit; color:inherit;
+  font:inherit; color:inherit; white-space:nowrap;
   opacity:0; pointer-events:none;
 }
 .glitch:hover::before {
-  opacity:.8; color:var(--cyan);
+  opacity:.85; color:var(--cyan);
   text-shadow:2px 0 var(--cyan);
   clip-path:polygon(0 30%,100% 30%,100% 50%,0 50%);
   animation:glitch-a .3s steps(2) infinite;
 }
 .glitch:hover::after {
-  opacity:.8; color:var(--red);
+  opacity:.85; color:var(--red);
   text-shadow:-2px 0 var(--red);
   clip-path:polygon(0 60%,100% 60%,100% 80%,0 80%);
   animation:glitch-b .4s steps(3) infinite;
@@ -133,7 +147,7 @@ a { text-decoration:none; color:inherit; }
   position:fixed; width:100%; top:0; z-index:1000;
   background:var(--glass);
   border-bottom:1px solid var(--bdr);
-  backdrop-filter:blur(22px);
+  backdrop-filter:blur(22px); -webkit-backdrop-filter:blur(22px);
   transition:padding .4s,box-shadow .4s;
 }
 .navbar.scrolled {
@@ -307,10 +321,12 @@ a { text-decoration:none; color:inherit; }
   font-size:clamp(1.7rem,5vw,3.2rem);
   font-weight:900; letter-spacing:2px; text-transform:uppercase;
   margin-bottom:60px; line-height:1.1;
-  opacity:0; transform:translateY(20px);
-  transition:all .9s .2s;
+  opacity:0; transform:translateY(20px) perspective(800px) rotateX(-25deg);
+  transform-origin:bottom;
+  filter:blur(6px);
+  transition:opacity .9s .2s, transform .9s cubic-bezier(.16,1,.3,1) .2s, filter .9s .2s;
 }
-.s-title.vis { opacity:1; transform:none; }
+.s-title.vis { opacity:1; transform:translateY(0) perspective(800px) rotateX(0deg); filter:blur(0); }
 .s-title span { color:var(--cyan); text-shadow:0 0 16px var(--cyan); }
 .s-title .r   { color:var(--red);  text-shadow:0 0 16px var(--red); }
 
@@ -328,12 +344,13 @@ a { text-decoration:none; color:inherit; }
   background:var(--bg2); padding:36px 20px; text-align:center;
   opacity:0;
   clip-path:inset(0 0 100% 0);
-  transition:opacity .6s, clip-path .8s cubic-bezier(.16,1,.3,1);
+  filter:blur(6px);
+  transition:opacity .6s, clip-path .8s cubic-bezier(.16,1,.3,1), filter .7s;
 }
 .stat-item:nth-child(2){transition-delay:.1s}
 .stat-item:nth-child(3){transition-delay:.18s}
 .stat-item:nth-child(4){transition-delay:.26s}
-.stat-item.vis { opacity:1; clip-path:inset(0 0 0% 0); }
+.stat-item.vis { opacity:1; clip-path:inset(0 0 0% 0); filter:blur(0); }
 .stat-num {
   font-family:'Orbitron',monospace;
   font-size:clamp(1.8rem,4vw,2.8rem);
@@ -349,7 +366,7 @@ a { text-decoration:none; color:inherit; }
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(310px,1fr));
   gap:32px;
-  perspective:1200px;
+  perspective:1400px;
 }
 .video-card {
   background:var(--bg2); border-radius:10px; overflow:hidden;
@@ -369,7 +386,7 @@ a { text-decoration:none; color:inherit; }
 }
 /* Glare overlay for tilt effect */
 .video-card .glare {
-  position:absolute; inset:0; z-index:2; pointer-events:none; border-radius:10px;
+  position:absolute; inset:0; z-index:3; pointer-events:none; border-radius:10px;
   background:radial-gradient(circle at 50% 50%, rgba(255,255,255,0.08) 0%, transparent 70%);
   opacity:0; transition:opacity .3s;
 }
@@ -379,9 +396,12 @@ a { text-decoration:none; color:inherit; }
   filter:blur(0); transform:rotateY(0deg) rotateX(0deg) translateY(0);
 }
 .video-card:hover .glare { opacity:1; }
+/* inner layers get depth parallax on tilt */
+.video-card .video-container,
+.video-card .video-info { transform:translateZ(0); transition:transform .2s ease-out; }
 .video-container { position:relative; padding-bottom:56.25%; height:0; }
 .video-container iframe { position:absolute; top:0; left:0; width:100%; height:100%; border:none; }
-.video-info { padding:24px; }
+.video-info { padding:24px; position:relative; z-index:2; }
 .v-tag {
   font-family:'Orbitron',monospace; font-size:8px; letter-spacing:3px;
   color:var(--cyan); text-transform:uppercase; margin-bottom:10px;
@@ -477,6 +497,7 @@ footer p { font-size:11px; letter-spacing:2px; color:rgba(255,255,255,0.22); mar
 <div id="c-ring"></div>
 <div id="c-dot"></div>
 <div id="noise"></div>
+<div id="vignette"></div>
 <canvas id="bg-canvas"></canvas>
 
 <nav class="navbar" id="nb">
@@ -603,16 +624,23 @@ footer p { font-size:11px; letter-spacing:2px; color:rgba(255,255,255,0.22); mar
 // ════════════════════════════════════════════════
 // SHARED STATE
 // ════════════════════════════════════════════════
-const mouse = { x:0, y:0, nx:0, ny:0 };
-let scrollY = 0, lastScrollY = 0, scrollVel = 0;
+const mouse = { x:-9999, y:-9999, nx:0, ny:0, active:false };
+let scrollY = window.scrollY || 0, lastScrollY = scrollY, scrollVel = 0;
 let W = innerWidth, H = innerHeight;
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// Device-tier detection drives particle density / effects for 60fps on tablets & phones.
+const isTouch = window.matchMedia('(hover:none),(pointer:coarse)').matches;
+const isMobile = innerWidth < 768 || isTouch;
+const TIER = reduceMotion ? 'low' : (isMobile ? 'mid' : 'high');
 
 window.addEventListener('mousemove', e => {
-  mouse.x = e.clientX; mouse.y = e.clientY;
+  mouse.x = e.clientX; mouse.y = e.clientY; mouse.active = true;
   mouse.nx = (e.clientX/W)*2 - 1;
   mouse.ny = -((e.clientY/H)*2 - 1);
-});
-window.addEventListener('scroll', () => { scrollY = window.scrollY; });
+}, { passive:true });
+window.addEventListener('mouseleave', ()=>{ mouse.active=false; });
+window.addEventListener('scroll', () => { scrollY = window.scrollY; }, { passive:true });
 
 // ════════════════════════════════════════════════
 // 1. CUSTOM CURSOR
@@ -621,32 +649,34 @@ const ring = document.getElementById('c-ring');
 const dot  = document.getElementById('c-dot');
 let lx=0, ly=0;
 
-function cursorLoop(){
-  lx += (mouse.x - lx) * 0.13;
-  ly += (mouse.y - ly) * 0.13;
-  ring.style.left = lx+'px'; ring.style.top = ly+'px';
-  dot.style.left  = mouse.x+'px'; dot.style.top = mouse.y+'px';
-  requestAnimationFrame(cursorLoop);
+if(!isTouch){
+  function cursorLoop(){
+    lx += (mouse.x - lx) * 0.16;
+    ly += (mouse.y - ly) * 0.16;
+    ring.style.left = lx+'px'; ring.style.top = ly+'px';
+    dot.style.left  = mouse.x+'px'; dot.style.top = mouse.y+'px';
+    requestAnimationFrame(cursorLoop);
+  }
+  cursorLoop();
+  document.querySelectorAll('a,button,.btn,.social-icon,.video-card').forEach(el=>{
+    el.addEventListener('mouseenter',()=>document.body.classList.add('c-hover'));
+    el.addEventListener('mouseleave',()=>document.body.classList.remove('c-hover'));
+  });
 }
-cursorLoop();
-
-document.querySelectorAll('a,button,.btn').forEach(el=>{
-  el.addEventListener('mouseenter',()=>document.body.classList.add('c-hover'));
-  el.addEventListener('mouseleave',()=>document.body.classList.remove('c-hover'));
-});
 
 // ════════════════════════════════════════════════
-// 2. THREE.JS BACKGROUND
+// 2. THREE.JS BACKGROUND — CONSTELLATION WAVE NET
 // ════════════════════════════════════════════════
 const canvas3d = document.getElementById('bg-canvas');
 const scene    = new THREE.Scene();
 const cam      = new THREE.PerspectiveCamera(65, W/H, 0.1, 1000);
 cam.position.z = 5.5;
 
-const renderer = new THREE.WebGLRenderer({ canvas:canvas3d, alpha:true, antialias:true });
+const renderer = new THREE.WebGLRenderer({ canvas:canvas3d, alpha:true, antialias:!isMobile, powerPreference:'high-performance' });
 renderer.setSize(W, H);
-renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setPixelRatio(Math.min(devicePixelRatio, isMobile ? 1.5 : 2));
 
+// programmatic radial glow texture (no external assets)
 function makeOrb(r,g,b){
   const c=document.createElement('canvas'); c.width=c.height=128;
   const x=c.getContext('2d');
@@ -660,10 +690,15 @@ function makeOrb(r,g,b){
   return new THREE.CanvasTexture(c);
 }
 
-const GRID_W=60, GRID_H=36, GRID_SEP=0.24;
+// Grid density scales with device tier
+const GRID_W = TIER==='high' ? 64 : (TIER==='mid' ? 44 : 30);
+const GRID_H = TIER==='high' ? 38 : (TIER==='mid' ? 26 : 18);
+const GRID_SEP = 0.24;
+const NET_ENABLED = TIER !== 'low';   // draw connecting lines only on mid/high
+
 const waveCount = GRID_W * GRID_H;
 const waveGeo = new THREE.BufferGeometry();
-const wPos = new Float32Array(waveCount*3);
+const wPos  = new Float32Array(waveCount*3);
 const wOrig = new Float32Array(waveCount*3);
 
 let idx=0;
@@ -680,7 +715,7 @@ for(let gy=0;gy<GRID_H;gy++){
 waveGeo.setAttribute('position',new THREE.BufferAttribute(wPos,3));
 
 const waveMat = new THREE.PointsMaterial({
-  size:0.04,
+  size:0.045,
   map:makeOrb(0,240,255),
   transparent:true, opacity:1,
   blending:THREE.AdditiveBlending,
@@ -690,96 +725,187 @@ const waveMesh = new THREE.Points(waveGeo, waveMat);
 waveMesh.position.z = -2;
 scene.add(waveMesh);
 
-const ACCENTS=[
-  {count:700,color:[255,74,90], size:0.045,spread:18},
-  {count:450,color:[112,0,255], size:0.038,spread:22},
-];
+// ── Constellation NET: connect adjacent grid nodes with neon line segments ──
+let netMesh = null, netPos = null, netPairs = null, netMat = null;
+if(NET_ENABLED){
+  const pairs = [];
+  const id = (gx,gy)=> gy*GRID_W+gx;
+  for(let gy=0;gy<GRID_H;gy++){
+    for(let gx=0;gx<GRID_W;gx++){
+      if(gx<GRID_W-1) pairs.push(id(gx,gy), id(gx+1,gy));   // horizontal
+      if(gy<GRID_H-1) pairs.push(id(gx,gy), id(gx,gy+1));   // vertical
+    }
+  }
+  netPairs = pairs;
+  const segCount = pairs.length/2;
+  netPos = new Float32Array(segCount*2*3);
+  const netGeo = new THREE.BufferGeometry();
+  netGeo.setAttribute('position', new THREE.BufferAttribute(netPos,3));
+  netMat = new THREE.LineBasicMaterial({
+    color:0x00f0ff, transparent:true, opacity:0.10,
+    blending:THREE.AdditiveBlending, depthWrite:false,
+  });
+  netMesh = new THREE.LineSegments(netGeo, netMat);
+  netMesh.position.z = -2;
+  scene.add(netMesh);
+}
+
+// ── Multi-colored accent particle clouds (Red, Purple) ──
+const ACCENTS = TIER==='high'
+  ? [ {count:700,color:[255,74,90], size:0.05, spread:18, mat:null},
+      {count:480,color:[112,0,255], size:0.042,spread:22, mat:null} ]
+  : TIER==='mid'
+  ? [ {count:360,color:[255,74,90], size:0.05, spread:18, mat:null},
+      {count:240,color:[112,0,255], size:0.042,spread:22, mat:null} ]
+  : [ {count:160,color:[255,74,90], size:0.05, spread:18, mat:null} ];
+
 const accentMeshes=[];
 ACCENTS.forEach(a=>{
   const geo=new THREE.BufferGeometry();
   const pos=new Float32Array(a.count*3);
   for(let i=0;i<a.count*3;i++) pos[i]=(Math.random()-0.5)*a.spread;
   geo.setAttribute('position',new THREE.BufferAttribute(pos,3));
-  const mat=new THREE.PointsMaterial({
+  a.mat=new THREE.PointsMaterial({
     size:a.size, map:makeOrb(...a.color),
     transparent:true, opacity:.8,
     blending:THREE.AdditiveBlending, depthWrite:false,
   });
-  const m=new THREE.Points(geo,mat);
+  const m=new THREE.Points(geo,a.mat);
   scene.add(m);
   accentMeshes.push(m);
 });
 
-const icoGeo = new THREE.IcosahedronGeometry(1.3, 1);
-const icoMat = new THREE.MeshBasicMaterial({
-  color:0x00f0ff, wireframe:true, transparent:true, opacity:0.18,
-});
-const icoMesh = new THREE.Mesh(icoGeo, icoMat);
-icoMesh.position.z = 0.5;
-scene.add(icoMesh);
+// ════════════════════════════════════════════════
+// CENTRAL GLITCHING WIREFRAME CORE (chromatic ghosts)
+// ════════════════════════════════════════════════
+const coreGroup = new THREE.Group();
+coreGroup.position.z = 0.5;
+scene.add(coreGroup);
 
-const torusGeo = new THREE.TorusGeometry(0.9, 0.02, 8, 60);
-const torusMat = new THREE.MeshBasicMaterial({
-  color:0xff4a5a, wireframe:true, transparent:true, opacity:0.12,
-});
+const icoGeo = new THREE.IcosahedronGeometry(1.35, 1);
+const icoOrig = icoGeo.attributes.position.array.slice();
+
+const icoMat = new THREE.MeshBasicMaterial({ color:0x00f0ff, wireframe:true, transparent:true, opacity:0.22 });
+const icoMesh = new THREE.Mesh(icoGeo, icoMat);
+coreGroup.add(icoMesh);
+
+// chromatic ghost shells share the SAME geometry, offset + hidden until glitch
+const ghostRed  = new THREE.Mesh(icoGeo, new THREE.MeshBasicMaterial({ color:0xff4a5a, wireframe:true, transparent:true, opacity:0 }));
+const ghostPurp = new THREE.Mesh(icoGeo, new THREE.MeshBasicMaterial({ color:0x7000ff, wireframe:true, transparent:true, opacity:0 }));
+coreGroup.add(ghostRed, ghostPurp);
+
+// inner solid-ish glow core for added depth
+const innerGeo = new THREE.IcosahedronGeometry(0.55, 0);
+const innerMat = new THREE.MeshBasicMaterial({ color:0x00f0ff, wireframe:true, transparent:true, opacity:0.12 });
+const innerMesh = new THREE.Mesh(innerGeo, innerMat);
+coreGroup.add(innerMesh);
+
+// orbiting cyber torus
+const torusGeo = new THREE.TorusGeometry(1.9, 0.018, 8, 80);
+const torusMat = new THREE.MeshBasicMaterial({ color:0xff4a5a, wireframe:true, transparent:true, opacity:0.12 });
 const torusMesh = new THREE.Mesh(torusGeo, torusMat);
+torusMesh.position.z = -0.5;
 scene.add(torusMesh);
 
-let glitchTimer=0;
-function applyGlitch(){
-  const pos=icoGeo.attributes.position.array;
-  const orig=icoGeo.attributes.position.array.slice();
+// vertex-jitter glitch + chromatic split
+let glitchActive = false;
+function fireGlitch(){
+  glitchActive = true;
+  const pos = icoGeo.attributes.position.array;
   for(let i=0;i<pos.length;i+=3){
-    pos[i]   += (Math.random()-0.5)*0.12;
-    pos[i+1] += (Math.random()-0.5)*0.12;
+    pos[i]   = icoOrig[i]   + (Math.random()-0.5)*0.18;
+    pos[i+1] = icoOrig[i+1] + (Math.random()-0.5)*0.18;
+    pos[i+2] = icoOrig[i+2] + (Math.random()-0.5)*0.10;
   }
-  icoGeo.attributes.position.needsUpdate=true;
+  icoGeo.attributes.position.needsUpdate = true;
+  // chromatic aberration shells flash + offset
+  ghostRed.material.opacity  = 0.5;
+  ghostPurp.material.opacity = 0.4;
+  ghostRed.position.set(0.06,-0.04,0);
+  ghostPurp.position.set(-0.06,0.04,0);
   setTimeout(()=>{
-    for(let i=0;i<pos.length;i++) pos[i]=orig[i];
-    icoGeo.attributes.position.needsUpdate=true;
-  },80);
+    icoGeo.attributes.position.array.set(icoOrig);
+    icoGeo.attributes.position.needsUpdate = true;
+    ghostRed.material.opacity = 0; ghostPurp.material.opacity = 0;
+    ghostRed.position.set(0,0,0); ghostPurp.position.set(0,0,0);
+    glitchActive = false;
+  }, 90);
 }
 
 const clock = new THREE.Clock();
+
+// smoothed mouse for buttery parallax
+let smx=0, smy=0;
 
 function render(){
   requestAnimationFrame(render);
   const t = clock.getElapsedTime();
 
+  // scroll velocity → glow energy
   scrollVel += (scrollY - lastScrollY);
   scrollVel *= 0.88;
   lastScrollY = scrollY;
-  const absVel = Math.abs(scrollVel);
+  const absVel = Math.min(Math.abs(scrollVel), 60);
 
-  waveMat.opacity = Math.min(1, 0.75 + absVel*0.015);
-  waveMat.size    = Math.min(0.07, 0.04 + absVel*0.0005);
+  smx += (mouse.nx - smx) * 0.06;
+  smy += (mouse.ny - smy) * 0.06;
+
+  // dynamic glow driven by scroll velocity + gentle breathing pulse
+  const pulse = 0.5 + Math.sin(t*1.4)*0.5;
+  waveMat.opacity = Math.min(1, 0.7 + absVel*0.012 + pulse*0.06);
+  waveMat.size    = Math.min(0.085, 0.045 + absVel*0.0006);
+  if(netMat) netMat.opacity = Math.min(0.28, 0.08 + absVel*0.004 + pulse*0.03);
+  ACCENTS.forEach(a=>{ a.mat.opacity = Math.min(1, 0.6 + absVel*0.01 + pulse*0.18); });
+
+  // mouse world position (account for net z offset)
+  const mWX = smx*3.0;
+  const mWY = smy*1.7;
 
   const wArr = waveMesh.geometry.attributes.position.array;
   for(let i=0;i<waveCount;i++){
     const i3=i*3;
     const ox=wOrig[i3], oy=wOrig[i3+1];
-    const gx=i%GRID_W, gy=Math.floor(i/GRID_W);
+    const gx=i%GRID_W, gy=(i/GRID_W)|0;
 
-    const wave  = Math.sin(t*0.8 + gx*0.35 + gy*0.4)*0.18
-                + Math.cos(t*0.5 + gx*0.2  - gy*0.3)*0.1
-                + Math.sin(t*1.2 - gx*0.15 + gy*0.25)*0.08;
+    // organic morphing wave (data-network energy)
+    const wave = Math.sin(t*0.8 + gx*0.35 + gy*0.40)*0.18
+               + Math.cos(t*0.5 + gx*0.20 - gy*0.30)*0.10
+               + Math.sin(t*1.2 - gx*0.15 + gy*0.25)*0.08;
 
-    const worldX = ox - mouse.nx*1.5;
-    const worldY = oy - mouse.ny*0.8;
-    const dist = Math.sqrt(worldX*worldX + worldY*worldY);
-    const repulse = dist < 1.2 ? (1.2-dist)/1.2 * 0.4 : 0;
+    // mouse ripple: repulsion in-plane + propagating Z ring
+    const dx = ox - mWX, dy = oy - mWY;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    let rx=0, ry=0, ripple=0;
+    if(mouse.active && dist < 2.2){
+      const f = (2.2 - dist)/2.2;
+      rx = (dx/(dist+0.001)) * f * 0.28;
+      ry = (dy/(dist+0.001)) * f * 0.20;
+      ripple = Math.sin(dist*5.0 - t*4.0) * f * 0.30;
+    }
 
-    wArr[i3]   = ox + (ox - mouse.nx*1.5) * repulse * 0.12;
-    wArr[i3+1] = oy + (oy - mouse.ny*0.8) * repulse * 0.1;
-    wArr[i3+2] = wave + scrollVel*0.015;
+    wArr[i3]   = ox + rx;
+    wArr[i3+1] = oy + ry;
+    wArr[i3+2] = wave + ripple + scrollVel*0.012;
   }
-  waveMesh.geometry.attributes.position.needsUpdate=true;
+  waveMesh.geometry.attributes.position.needsUpdate = true;
 
+  // sync the constellation net to the morphed point positions
+  if(netMesh){
+    for(let s=0;s<netPairs.length;s+=2){
+      const a3 = netPairs[s]*3, b3 = netPairs[s+1]*3;
+      const o = (s/2)*6;
+      netPos[o]   = wArr[a3];   netPos[o+1] = wArr[a3+1]; netPos[o+2] = wArr[a3+2];
+      netPos[o+3] = wArr[b3];   netPos[o+4] = wArr[b3+1]; netPos[o+5] = wArr[b3+2];
+    }
+    netMesh.geometry.attributes.position.needsUpdate = true;
+  }
+
+  // drifting accent clouds
   accentMeshes.forEach((m,mi)=>{
     const pos=m.geometry.attributes.position.array;
     const spread=ACCENTS[mi].spread;
     for(let i=2;i<pos.length;i+=3){
-      pos[i] += scrollVel*0.06 + 0.004;
+      pos[i] += scrollVel*0.05 + 0.004;
       if(pos[i]>spread*0.5) pos[i]=-spread*0.5;
     }
     m.geometry.attributes.position.needsUpdate=true;
@@ -787,65 +913,99 @@ function render(){
     m.rotation.x = t * 0.004;
   });
 
-  waveMesh.rotation.x += (mouse.ny*0.06 - waveMesh.rotation.x)*0.04;
-  waveMesh.rotation.y += (mouse.nx*0.06 - waveMesh.rotation.y)*0.04;
+  // parallax tilt of the whole net toward mouse
+  waveMesh.rotation.x += (smy*0.08 - waveMesh.rotation.x)*0.05;
+  waveMesh.rotation.y += (smx*0.08 - waveMesh.rotation.y)*0.05;
+  if(netMesh){ netMesh.rotation.copy(waveMesh.rotation); }
 
-  icoMesh.rotation.x += (mouse.ny*0.5 - icoMesh.rotation.x)*0.06;
-  icoMesh.rotation.y += (mouse.nx*0.5 - icoMesh.rotation.y)*0.06;
-  icoMesh.rotation.z  = t*0.12;
+  // core geometry reacts to mouse + glows with velocity
+  coreGroup.rotation.x += (smy*0.6 - coreGroup.rotation.x)*0.06;
+  coreGroup.rotation.y += (smx*0.6 - coreGroup.rotation.y)*0.06;
+  icoMesh.rotation.z = t*0.12;
+  innerMesh.rotation.z = -t*0.3;
+  innerMesh.rotation.x = t*0.2;
+  icoMat.opacity = 0.18 + absVel*0.006 + pulse*0.06;
 
-  glitchTimer++;
-  if(glitchTimer > 120 && Math.random()<0.025){ applyGlitch(); glitchTimer=0; }
+  if(!glitchActive && Math.random() < 0.012){ fireGlitch(); }
 
   torusMesh.rotation.x = t*0.18;
-  torusMesh.rotation.y = t*0.08 + mouse.nx*0.4;
+  torusMesh.rotation.y = t*0.08 + smx*0.5;
 
   renderer.render(scene, cam);
 }
 render();
 
+// flawless resize handling (debounced)
+let rzT;
 window.addEventListener('resize',()=>{
-  W=innerWidth; H=innerHeight;
-  cam.aspect=W/H; cam.updateProjectionMatrix();
-  renderer.setSize(W,H);
+  clearTimeout(rzT);
+  rzT = setTimeout(()=>{
+    W=innerWidth; H=innerHeight;
+    cam.aspect=W/H; cam.updateProjectionMatrix();
+    renderer.setSize(W,H);
+    renderer.setPixelRatio(Math.min(devicePixelRatio, isMobile ? 1.5 : 2));
+  }, 120);
+});
+
+// pause rendering when tab is hidden (battery + perf)
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden){ clock.stop(); } else { clock.start(); }
 });
 
 // ════════════════════════════════════════════════
-// 3. VIDEO CARD 3D TILT
+// 3. VIDEO CARD 3D TILT (lerped perspective parallax)
 // ════════════════════════════════════════════════
-document.querySelectorAll('.video-card').forEach(card=>{
-  const glare = card.querySelector('.glare');
+if(!isTouch){
+  document.querySelectorAll('.video-card').forEach(card=>{
+    const glare = card.querySelector('.glare');
+    const container = card.querySelector('.video-container');
+    const info = card.querySelector('.video-info');
+    let tx=0,ty=0, cx=0,cy=0, hover=false, raf=null;
 
-  card.addEventListener('mousemove', e=>{
-    const rect = card.getBoundingClientRect();
-    const cx = e.clientX - rect.left;
-    const cy = e.clientY - rect.top;
-    const pctX = cx/rect.width  - 0.5;
-    const pctY = cy/rect.height - 0.5;
-
-    const rotX = pctY * -14;
-    const rotY = pctX * 18;
-
-    card.style.transform    = `perspective(900px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale3d(1.03,1.03,1.03)`;
-    card.style.borderColor  = 'rgba(0,240,255,0.5)';
-    card.style.boxShadow    = `0 0 30px rgba(0,240,255,0.22), 0 ${20+pctY*10}px 40px rgba(0,0,0,0.6)`;
-
-    if(glare){
-      glare.style.background=`radial-gradient(circle at ${cx}px ${cy}px, rgba(255,255,255,0.1) 0%, transparent 70%)`;
-      glare.style.opacity='1';
+    function loop(){
+      tx += (card._tx - tx)*0.12;
+      ty += (card._ty - ty)*0.12;
+      card.style.transform = `perspective(1100px) rotateX(${ty}deg) rotateY(${tx}deg) scale3d(1.03,1.03,1.03)`;
+      if(container) container.style.transform = `translateZ(40px)`;
+      if(info) info.style.transform = `translateZ(60px)`;
+      if(hover || Math.abs(tx-card._tx)>0.01 || Math.abs(ty-card._ty)>0.01){
+        raf = requestAnimationFrame(loop);
+      } else { raf=null; }
     }
-  });
 
-  card.addEventListener('mouseleave',()=>{
-    card.style.transform   = '';
-    card.style.borderColor = '';
-    card.style.boxShadow   = '';
-    if(glare){ glare.style.opacity='0'; }
+    card.addEventListener('mouseenter',()=>{ hover=true; if(!raf) loop(); });
+
+    card.addEventListener('mousemove', e=>{
+      const rect = card.getBoundingClientRect();
+      cx = e.clientX - rect.left;
+      cy = e.clientY - rect.top;
+      const pctX = cx/rect.width  - 0.5;
+      const pctY = cy/rect.height - 0.5;
+      card._ty = pctY * -14;   // rotateX
+      card._tx = pctX *  18;   // rotateY
+      card.style.borderColor = 'rgba(0,240,255,0.5)';
+      card.style.boxShadow   = `0 0 34px rgba(0,240,255,0.25), 0 ${24+pctY*12}px 48px rgba(0,0,0,0.6)`;
+      if(glare){
+        glare.style.background=`radial-gradient(circle at ${cx}px ${cy}px, rgba(255,255,255,0.14) 0%, transparent 60%)`;
+        glare.style.opacity='1';
+      }
+    });
+
+    card.addEventListener('mouseleave',()=>{
+      hover=false;
+      card._tx=0; card._ty=0;
+      card.style.transform   = '';
+      card.style.borderColor = '';
+      card.style.boxShadow   = '';
+      if(container) container.style.transform='';
+      if(info) info.style.transform='';
+      if(glare){ glare.style.opacity='0'; }
+    });
   });
-});
+}
 
 // ════════════════════════════════════════════════
-// 4. INTERSECTION OBSERVER
+// 4. INTERSECTION OBSERVER — staggered cinematic reveals
 // ════════════════════════════════════════════════
 const io = new IntersectionObserver((entries)=>{
   entries.forEach(e=>{
@@ -871,18 +1031,21 @@ const io = new IntersectionObserver((entries)=>{
 
 document.querySelectorAll('.video-card,.stat-item,.social-icon,.s-title,.s-eye').forEach(el=>io.observe(el));
 
+// number counter (eased)
 function countUp(el, target, suffix=''){
-  const dur=1600, step=16;
-  const steps=Math.ceil(dur/step);
-  let current=0;
-  const inc = target/steps;
-  const timer=setInterval(()=>{
-    current=Math.min(current+inc, target);
-    let display = Math.round(current);
-    if(target>=1000){ display = (current/1000).toFixed(display===target?0:1)+'K'; }
-    el.textContent = display+suffix;
-    if(current>=target){ el.textContent=target>=1000?(target/1000)+'K'+suffix:target+suffix; clearInterval(timer); }
-  },step);
+  const dur=1700, start=performance.now();
+  function frame(now){
+    const p = Math.min((now-start)/dur, 1);
+    const eased = 1 - Math.pow(1-p, 3);          // easeOutCubic
+    const current = target * eased;
+    let display;
+    if(target>=1000){ display = (current/1000).toFixed(p>=1?0:1)+'K'; }
+    else { display = Math.round(current); }
+    el.textContent = display + suffix;
+    if(p<1) requestAnimationFrame(frame);
+    else el.textContent = (target>=1000 ? (target/1000)+'K' : target) + suffix;
+  }
+  requestAnimationFrame(frame);
 }
 
 // ════════════════════════════════════════════════
@@ -890,7 +1053,7 @@ function countUp(el, target, suffix=''){
 // ════════════════════════════════════════════════
 window.addEventListener('scroll',()=>{
   document.getElementById('nb').classList.toggle('scrolled', window.scrollY>50);
-});
+}, { passive:true });
 
 document.getElementById('hbg').addEventListener('click',()=>{
   const nl=document.getElementById('nl');
